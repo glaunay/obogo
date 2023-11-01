@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "obogo"
+version = "0.2.0"
+description = ""
+authors = ["glaunay <pitooon@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.9,<3.13"
+scipy = "^1.11.3"
+networkx = "^3.2.1"
+uniprot-redis = "^1.5.3"
+
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.26.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
