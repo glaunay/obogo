@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "obogo"
-version = "0.2.2"
+version = "0.2.4"
 description = ""
 authors = ["glaunay <pitooon@gmail.com>"]
 readme = "README.md"

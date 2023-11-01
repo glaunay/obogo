@@ -1,4 +1,4 @@
-from .tree import GO_tree
+from .tree import GO_tree, NodeID, NodeName
 from uniprot_redis.store.schemas import UniprotAC, UniprotDatum
 import scipy.stats as stats 
 from typing import Literal, Union, Iterator
