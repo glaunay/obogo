@@ -8,10 +8,12 @@ from pyproteinsext.uniprot import Entry as Uniprot
 from .type_checkers import literal_arg_checker
 import sys
 
-NodeID = NewType("NodeID", str)
+NodeID   = NewType("NodeID", str)
+NodeName = NewType("NodeName", str)
 ProteinsType  = Literal["background", "measured"]
 PercolateType = Literal["background", "measured", "both"]
 
+import re
 
 
 class GO_tree(nx.DiGraph):
@@ -20,19 +22,23 @@ class GO_tree(nx.DiGraph):
         self.protein_load_status = (False, False)
         self.percolated_status   = (False, False)
         self.uniprot_omega       = (set(), set()) # background uniprot data, measured uniprot data
+        self.names_index = {}
     def add_node(self, id, **params):
         """
         nx add_node wrapper to account for node aliases
         """
 
         super(GO_tree, self).add_node(id, **params)
+        if 'name' in params:
+            self.names_index[ params['name'] ] = id
+        
         if 'alt_id' in params:
             alt_ids = params['alt_id'] if type(params['alt_id']) is list else [ params['alt_id'] ]        
             real_n = self.nodes[id]
             for alt_id in alt_ids:
                 super(GO_tree, self).add_node(alt_id, alias_to = real_n, _id = alt_id)
     
-    def get_go_node(self, node_id:NodeID, many_to_consider=False)->Union[dict, list[dict]]:
+    def get_go_node(self, node_id:Union[NodeID, NodeName], many_to_consider=False)->Union[dict, list[dict]]:
         """
         nx G.node wrapper for the automatic forward of alias go_id to concrete node 
         
@@ -82,6 +88,14 @@ class GO_tree(nx.DiGraph):
         Seems like the above reciprocal, the term itself no longer used and replaced by a single 
         term. We silently forward from the deprecated to the replacement one. 
         """
+
+        isGOterm = lambda value: True if re.match(r'^GO:[0-9]+', value) else False
+
+        if not isGOterm(node_id):
+            if not node_id in self.names_index:
+                raise KeyError(f"This value \"{node_id}\" is not a GO identifier or a GO name")
+            node_id = self.names_index[node_id]
+
         _ = self.nodes[node_id]
         
         if "alias_to" in _:
@@ -213,11 +227,6 @@ class GO_tree(nx.DiGraph):
     def ora_rdy(self):
         return self.protein_load_status[0] and self.protein_load_status[1] and \
                self.percolated_status[0]   and self.percolated_status[1]
-
-    
-
-    #def cut(self: node:NodeID)->Self:
-    # mmmh
 
     @literal_arg_checker
     def percolate(self, percol_type:PercolateType="both"):
