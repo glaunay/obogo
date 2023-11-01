@@ -43,8 +43,9 @@ def ora_validator(tree, delta_prot, norm):
     
     return delta, N, f"perc_{norm}"
 
-def compute_node_ora(tree:GO_tree, delta_prot:Union[ Iterator[UniprotDatum], Iterator[UniprotAC]], go_id:str,
-                         norm:OraNormalizer="background"):
+def compute_node_ora(tree:GO_tree, delta_prot:Union[ Iterator[UniprotDatum], Iterator[UniprotAC]], 
+                        go_id:Union[NodeID, NodeName],
+                        norm:OraNormalizer="background"):
     delta, N , pop_key = ora_validator(tree, delta_prot, norm)
     n = tree.get_go_node(go_id)
     return _node_ora(n, delta, N, pop_key)

@@ -146,13 +146,14 @@ class GO_tree(nx.DiGraph):
         """
         go_node = self.get_go_node(node_id, many_to_consider)
         if not type(go_node) is list :
-            return super(GO_tree, self).successors(go_node['_id'])
-        
-        
-        for g in go_node:
-            s = super(GO_tree, self).successors(node_id)
-            for _ in s:
-                yield _
+            for s in super(GO_tree, self).successors(go_node['_id']):
+                yield s
+        # This will be slow ^^
+        else:
+            for g in go_node:
+                s = super(GO_tree, self).successors(node_id)
+                for _ in s:
+                    yield _
 
     @literal_arg_checker
     def load_proteins(self, k:ProteinsType, protein_coll:Iterator[ Union[UniprotDatum, Uniprot] ]) -> None:
@@ -199,7 +200,6 @@ class GO_tree(nx.DiGraph):
     @literal_arg_checker
     def get_proteins(self, node_id:NodeID, k:ProteinsType="background", deep=True)->set[UniprotDatum]:
         """ Get all UniprotDatum attached to subtree rooted at provided node id """
-        #literal_assert(k, ProteinsType)
 
         def _get_proteins(node_id, deep)->set[UniprotDatum]:
             curr_node = self.get_go_node(node_id)
