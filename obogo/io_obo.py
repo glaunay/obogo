@@ -66,7 +66,7 @@ class Buffer:
             effectively shadowing 'is_a' (used for edge) namespace fields
         """
 
-        _ = { k if not k in {'id', 'is_a'} else '_id' if k == 'id' else '_is_a' : self.__getitem__(k)  for k in self if not k in { 'namespace', 'consider' } } 
+        _ = { k if not k in {'id', 'is_a'} else '_id' if k == 'id' else '_is_a' : self.__getitem__(k)  for k in self if not k in { 'consider' } } 
         if 'consider' in self.data:
             _['consider'] = self.data['consider']
         
