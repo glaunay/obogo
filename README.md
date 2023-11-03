@@ -1,4 +1,4 @@
-# obogo: yet another GeneOntology reader/crawler !!!
+# obogo: Yet another ontology crawler to perform ORA!!!
 
 ## installation
 `pip install obogo`

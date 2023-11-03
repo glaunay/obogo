@@ -1,9 +1,10 @@
 [tool.poetry]
 name = "obogo"
-version = "0.2.6"
-description = ""
+version = "0.2.7"
+description = "Yet another ontology crawler to perform ORA!!!"
 authors = ["glaunay <pitooon@gmail.com>"]
 readme = "README.md"
+repository = "https://github.com/glaunay/obogo"
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.13"
