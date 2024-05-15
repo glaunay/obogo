@@ -277,15 +277,16 @@ class GO_tree(nx.DiGraph):
                                   True if percol_type in ["both", "measured"]   else self.percolated_status[1] )
 
 # MAybe move to io
-def reader(obo_file_path:str, keep_obsolete=True, ns=None)-> DiGraph :
+def reader(obo_file_path:str, keep_obsolete=True, ns=None, relationships_to_consider = ['is_a'])-> DiGraph :
     G = GO_tree() #nx.DiGraph()
 
     for node_buffer in obo_node_buffer_iter(open(obo_file_path, 'r')):
         if not keep_obsolete and node_buffer.is_obsolete:
             continue
         G.add_node(node_buffer['id'], **node_buffer.nx_node_param)
-        for node_parent_id in node_buffer.is_a_iter():
-            G.add_edge(node_parent_id, node_buffer['id'], type='is_a')
+        for relationship, node_parents in node_buffer.relationship_iter(relationships_to_consider).items():
+            for node_parent_id in node_parents:
+                G.add_edge(node_parent_id, node_buffer['id'], type=relationship)
 
     return G
 
