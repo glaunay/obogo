@@ -49,7 +49,14 @@ class Buffer:
     @property    
     def is_obsolete(self):
         return 'is_obsolete' in self.data
-            
+
+    def relationship_iter(self, relationships):
+        relationship_dic = {}
+        for rel in relationships:
+            if rel in self.data:
+                relationship_dic[rel] = self.data[rel]
+        return relationship_dic    
+
     def is_a_iter(self):
         if 'is_a' in self.data:
             return self.data['is_a']
@@ -92,10 +99,13 @@ def obo_node_buffer_iter(fp:TextIOWrapper):
             if not m:
                 m = re.search(r'^(name): (.+)', line)
             if not m:
+                m = re.search(r'^relationship: ([\S]+) ([\S]+)', line)
+            if not m:
                 m = re.search(r'^(.+): ([\S]+)', line)
                 if not m:
                     raise ValueError(line)
             buffer[ m[1] ] = m[2]
+            
 
     # pop trailer
     if buffer:
